@@ -820,7 +820,7 @@
                     "count"
                 ],
                 "properties": {
-                    "chats": {
+                    "industry_tags": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/IndustryTag"
