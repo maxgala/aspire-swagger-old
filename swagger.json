@@ -221,10 +221,19 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "OK",
+                        "allOf": [{
+                            "$ref": "#/components/responses/Jobs"
+                        }]
                     },
-                    "400": {
-                        "description": "Bad Request",
+                    "401": {
+                        "description": "UnAuthorized",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "426": {
+                        "description": "Upgrade Membership",
                         "allOf": [{
                             "$ref": "#/components/responses/GeneralErrorResponse"
                         }]
@@ -282,12 +291,6 @@
                     "200": {
                         "description": "OK",
                         "allOf": [{
-                            "$ref": "#/components/schemas/Job"
-                        }]
-                    },
-                    "204": {
-                        "description": "No Content",
-                        "allOf": [{
                             "$ref": "#/components/responses/GeneralResponse"
                         }]
                     },
@@ -304,10 +307,19 @@
                 "description": "Delete Job with id",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralResponse"
+                        }]
                     },
                     "404": {
                         "description": "Not Found",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "allOf": [{
                             "$ref": "#/components/responses/GeneralErrorResponse"
                         }]
@@ -324,10 +336,66 @@
                 "description": "Update Job status to CLOSED",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralResponse"
+                        }]
                     },
                     "404": {
                         "description": "Not Found",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    }
+                }
+            }
+        },
+        "/job_contact/{jobId}": {
+            "parameters": [
+                {"$ref": "#/components/parameters/JobIdPath"}
+            ],
+            "get": {
+                "tags": ["Jobs"],
+                "description": "Get Contact Information of the person who posted the job",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "allOf": [{
+                            "$ref": "#/components/responses/JobContact"
+                        }]
+                    },
+                    "404": {
+                        "description": "UnAuthorized",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "401": {
+                        "description": "Not Found",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "428": {
+                        "description": "Pre-Condition Required",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "417": {
+                        "description": "Expectation Failed",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "402": {
+                        "description": "Payment Required",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    },
+                    "426": {
+                        "description": "Upgrade Membership",
                         "allOf": [{
                             "$ref": "#/components/responses/GeneralErrorResponse"
                         }]
@@ -582,14 +650,14 @@
                 "required": [
                     "title",
                     "description",
-                    "posted_by",
-                    "contact_email",
+                    "requirements",
                     "company",
                     "country",
                     "region",
                     "city",
                     "job_type",
                     "job_tags",
+                    "salary",
                     "deadline"
                 ],
                 "properties": {
@@ -599,19 +667,6 @@
                     "title": {
                         "type": "string",
                         "maxLength": 255
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "requirements": {
-                        "type": "string"
-                    },
-                    "posted_by": {
-                        "$ref": "#/components/schemas/UserReference"
-                    },
-                    "contact_email": {
-                        "type": "string",
-                        "format": "email"
                     },
                     "company": {
                         "type": "string",
@@ -628,6 +683,27 @@
                     "city": {
                         "type": "string",
                         "maxLength": 255
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "requirements": {
+                        "type": "string"
+                    },
+                    "posted_by": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "poster_family_name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "poster_given_name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "people_contacted": {
+                        "type": "number"
                     },
                     "job_type": {
                         "type": "string",
@@ -655,6 +731,28 @@
                     },
                     "updated_on": {
                         "type": "number"
+                    }
+                }
+            },
+            "JobContact": {
+                "type": "object",
+                "required": [
+                    "posted_by",
+                    "poster_family_name",
+                    "poster_given_name"
+                ],
+                "properties": {
+                    "posted_by": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "poster_family_name": {
+                        "type": "string",
+                        "maxLength": 100
+                    },
+                    "poster_given_name": {
+                        "type": "string",
+                        "maxLength": 100
                     }
                 }
             },
@@ -859,6 +957,16 @@
                     "application/json": {
                         "schema": {
                             "$ref": "#/components/schemas/Job"
+                        }
+                    }
+                }
+            },
+            "JobContact": {
+                "description": "Job Response",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/JobContact"
                         }
                     }
                 }
