@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://nhchm8itm2.execute-api.us-east-1.amazonaws.com/Prod/"
+            "url": "https://vx4dosp9t1.execute-api.us-east-1.amazonaws.com/Prod"
         }
     ],
     "tags": [
