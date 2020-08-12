@@ -30,6 +30,10 @@
         {
             "name": "IndustryTags",
             "description": "API for Industry Tags Service"
+        },
+        {
+            "name": "Payment",
+            "description": "API for payment validation"
         }
     ],
     "paths": {
@@ -44,6 +48,32 @@
                 }
             }
         },
+        "/payment": {
+            "post": {
+                "tags": ["Payment"],
+                "description": "Validate payment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Payment"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "allOf": [{
+                            "$ref": "#/components/responses/GeneralErrorResponse"
+                        }]
+                    }
+                }
+            }       
+        }, 
         "/create-db-models": {
             "post": {
                 "tags": ["Index"],
@@ -644,6 +674,15 @@
             "UserReference": {
                 "type": "string",
                 "maxLength": 100
+            },
+            "Payment": {
+                "type": "object",
+                "required": ["payment_method_id"],
+                "properties": {
+                      "payment_method_id": {
+                      "type": "string"
+                    }
+                }
             },
             "Job": {
                 "type": "object",
