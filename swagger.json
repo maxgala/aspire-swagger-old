@@ -273,6 +273,45 @@
             "get": {
                 "tags": ["Jobs"],
                 "description": "Get All Jobs",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "filter jobs by user_id",
+                        "required": false,
+                        "schema": {
+                            "type":"email"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "filter jobs by status (open or closed)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["OPEN", "CLOSED"]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "filter jobs by page",
+                        "required": false,
+                        "schema": {
+                            "type":"integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "specifies page_size for page, default is 3 when not specified",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Ok",
@@ -697,7 +736,10 @@
                     "job_type",
                     "job_tags",
                     "salary",
-                    "deadline"
+                    "deadline",
+                    "posted_by",
+                    "poster_family_name",
+                    "poster_given_name"
                 ],
                 "properties": {
                     "job_id": {
